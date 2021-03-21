@@ -182,7 +182,7 @@ void ATPG::fault_sim_a_vector(const string &vec, int &num_of_current_detect) {
      * do the fault simulation */
     if ((num_of_fault == num_of_faults_in_parallel) || (next(pos, 1) == flist_undetect.cend())) {
 
-      /* starting with start_wire_index, evaulate all scheduled wires
+      /* starting with start_wire_index, evaluate all scheduled wires
        * start_wire_index helps to save time. */
       for (i = start_wire_index; i < nckt; i++) {
         if (sort_wlist[i]->is_scheduled()) {
@@ -211,7 +211,16 @@ void ATPG::fault_sim_a_vector(const string &vec, int &num_of_current_detect) {
          * Since we use two-bit logic to simulate circuit, you can use Mask[] to perform bit-wise operation to get value of a specific bit.
          * After that, don't forget to reset faulty values (wire_value2) to their fault-free values (wire_value1).
          */
-
+        if (w->is_output()) {
+          for (int j=0; j<num_of_fault; ++j) {
+            int v1 = w->wire_value1 & Mask[j];
+            int v2 = w->wire_value2 & Mask[j];
+            if ((v1 != v2) && (v1 != Unknown[j]) && (v2 != Unknown[j])) {
+              simulated_fault_list[j]->detect = TRUE;
+            }
+          }
+        }
+        w->wire_value2 = w->wire_value1;
         /*TODO*/
       } // pop out all faulty wires
       num_of_fault = 0;  // reset the counter of faults in a packet
@@ -423,7 +432,14 @@ void ATPG::inject_fault_value(const wptr faulty_wire, const int &bit_position, c
   /* Use mask[] to perform bit operation to inject fault (STUCK1 or STUCK0) to the right position
    * Call inject_fault_at() to set the fault_flag of the injected bit position.
    */
-  
+  if (fault_type == STUCK0) {
+    faulty_wire->wire_value2 &= ~Mask[bit_position];
+  } else if (fault_type == STUCK1) {
+    faulty_wire->wire_value2 |= Mask[bit_position];
+  } else {
+    fprintf(stderr, "Ignore the fault type (%d)!\n", fault_type);
+  }
+  faulty_wire->inject_fault_at(bit_position);
   /*TODO*/
 }/* end of inject_fault_value */
 

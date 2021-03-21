@@ -164,6 +164,7 @@ class FAULT {
                                 associated gate input index number for this GI fault */
   short fault_type;          /* s-a-1 or s-a-0 or slow-to-rise or slow-to-fall fault */
   short detect;              /* detection flag */
+  // TODO: Why is there {}?
   short activate{};            /* activation flag */
   bool test_tried;           /* flag to indicate test is being tried */
   int eqv_fault_num;         /* accumulated number of equivalent faults from PI to PO, see initflist.cpp */
@@ -176,10 +177,10 @@ class FAULT {
 such as the number of primary inputs and outputs, are defined in header
 file atpg.h.
 
-NOTICE! Alghough these variables are said to be global, they are
+NOTICE! Although these variables are said to be global, they are
 only global INSIDE the ATPG class. i.e. they are local variables
 of ATPG class.
-
+// Where is global.h?
 <<< Extracted global variables from global.h >>>
 ================================================
 vector<wptr> sort_wlist;                         /* sorted wire list with regard to level */
@@ -189,6 +190,7 @@ array<forward_list<wptr_s>,HASHSIZE> hash_wlist; /* hashed wire list */
 array<forward_list<nptr_s>,HASHSIZE> hash_nlist; /* hashed node list */
 int  in_vector_no;                               /* number of test vectors generated */
 bool fsim_only;                                  /* flag to indicate fault simulation only */
+// sim_vectors can't be found anywhere else.
 int  sim_vectors;                                /* number of simulation vectors */
 vector<string> vectors;                          /* vector set */
 

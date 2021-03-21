@@ -34,6 +34,13 @@ void ATPG::sim() {
   // walk through all wires in increasing order.
   // Because the wires are sorted according to their levels,
   // it is correct to evaluate the wires in increasing order.
+  for (int i = 0; i < nckt; i++) {
+    if (sort_wlist[i]->value == 2) {
+      for (nptr n: sort_wlist[i]->inode) {
+        evaluate(n);
+      }
+    }
+  }
   /*
    * For event-driven simulation, we set_change() after we inject new values (all ncktin wires)
    * So, if a wire value is_changed(), we should clear this flag by remove_changed() and set_schedule() to wait for simulation.
